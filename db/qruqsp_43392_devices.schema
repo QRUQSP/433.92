@@ -1,0 +1,42 @@
+#
+# Description
+# -----------
+# This table stores the weather devices heard, typically on 433mhz. Enteries in this table
+# will be based on information heard from rtl_433.
+#
+# Fields
+# ------
+# id:               The ID assigned to the device.
+# uuid:             The Universal Unique ID.
+# tnid:             The tenant the device is attached to.
+#
+# model:            The model string from rtl_433 json output.
+# did:              The id string from the rtl_433 json output.
+#
+# name:             The name given to the device. This will default to model but can
+#                   be overriden by user.
+#
+# status:           The current status of the device
+#
+#                       10 - New
+#                       30 - Active
+#                       60 - Ignore (Do not collect data about this device)
+#
+# date_added:       The UTC date and time the record was added.
+# last_updated:     The UTC date and time the record was last updated.
+#
+create table qruqsp_43392_devices (
+    id int not null auto_increment,
+    uuid char(36) not null,
+    tnid int not null,
+    model varchar(250) not null,
+    did varchar(50) not null,
+    name varchar(250) not null,
+    status tinyint unsigned not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (uuid),
+    unique index (tnid, model, did),
+    index sync (tnid, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.01';

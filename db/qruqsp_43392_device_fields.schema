@@ -1,0 +1,50 @@
+#
+# Description
+# -----------
+# This table stores the fields associated with each device. These fields are discovered from the JSON
+# passed from the rtl_433 program. Each field is added to this table and the flags specifiy if the
+# data should be stored for this field.
+#
+# Fields
+# ------
+# id:               The ID assigned to the device field.
+# uuid:             The Universal Unique ID.
+# tnid:             The tenant the device field is attached to.
+#
+# device_id:        The ID of the device the field is for.
+#
+# fnumber:          The number assigned to the field. This must never change otherwise
+#                   the data in qruqsp_43392_device_data will not align properly.
+#
+# fname:            The name of the field in the rtl_433 json output
+#
+# name:             The label to use in the UI for this field. Defaults to name.
+#
+# flags:            The options for the field.
+#
+#                       0x01 - Store data for this field
+#                       0x02 - 
+#                       0x04 - 
+#                       0x08 - 
+#
+# example_value:    The value first read from this device
+#
+# date_added:       The UTC date and time the record was added.
+# last_updated:     The UTC date and time the record was last updated.
+#
+create table qruqsp_43392_device_fields (
+    id int not null auto_increment,
+    uuid char(36) not null,
+    tnid int not null,
+    device_id int not null,
+    fname varchar(250) not null,
+    name varchar(250) not null,
+    flags tinyint unsigned not null,
+    example_value varchar(250) not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (uuid),
+    unique index (device_id, fname),
+    index sync (tnid, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.01';
