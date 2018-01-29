@@ -35,7 +35,7 @@ function qruqsp_43392_web_processRequest(&$ciniki, $settings, $tnid, $args) {
     // Get the list of devices that are active, and their fields and latest data
     //
     $dt = new DateTime('now', new DateTimezone('UTC'));
-    $dt->sub(new DateInterval('P5M'));
+    $dt->sub(new DateInterval('PT5M'));
     $strsql = "SELECT devices.id, "
         . "devices.name, "
         . "IFNULL(fields.id, 0) AS field_id, "
@@ -55,7 +55,7 @@ function qruqsp_43392_web_processRequest(&$ciniki, $settings, $tnid, $args) {
             . ") "
         . "WHERE devices.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND devices.status = 30 "
-        . "ORDER BY devices.name, fields.name, data.sample_date "
+        . "ORDER BY devices.name, fields.name, data.sample_date DESC "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
     $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
