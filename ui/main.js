@@ -208,7 +208,7 @@ function qruqsp_43392_main() {
             'device_id':{'label':'Device', 'editable':'no', 'type':'text'},
             'fname':{'label':'JSON Field Name', 'editable':'no', 'type':'text'},
             'name':{'label':'Name', 'type':'text'},
-            'flags':{'label':'Options', 'type':'flags', 'flags':{'1':{'name':'Store'}}},
+            'flags':{'label':'Options', 'type':'flags', 'flags':{'1':{'name':'Store'}, '2':{'name':'Visible'},}},
             'example_value':{'label':'Example', 'editable':'no', 'type':'text'},
             }},
         '_buttons':{'label':'', 'buttons':{

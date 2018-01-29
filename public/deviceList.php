@@ -64,7 +64,6 @@ function qruqsp_43392_deviceList($ciniki) {
             . "AND status = 30 "
             . "ORDER BY status "
             . "";
-        error_log($strsql);
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
             array('container'=>'devices', 'fname'=>'id', 
