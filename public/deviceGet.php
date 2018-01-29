@@ -100,7 +100,6 @@ function qruqsp_43392_deviceGet($ciniki) {
             . "qruqsp_43392_device_fields.fname, "
             . "qruqsp_43392_device_fields.name, "
             . "qruqsp_43392_device_fields.flags, "
-            . "qruqsp_43392_device_fields.label, "
             . "qruqsp_43392_device_fields.example_value "
             . "FROM qruqsp_43392_device_fields "
             . "WHERE qruqsp_43392_device_fields.device_id = '" . ciniki_core_dbQuote($ciniki, $args['device_id']) . "' "
@@ -109,7 +108,7 @@ function qruqsp_43392_deviceGet($ciniki) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
             array('container'=>'fields', 'fname'=>'id', 
-                'fields'=>array('id', 'device_id', 'fname', 'name', 'flags', 'label', 'example_value')),
+                'fields'=>array('id', 'device_id', 'fname', 'name', 'flags', 'example_value')),
             ));
         if( $rc['stat'] != 'ok' ) {
             return $rc;

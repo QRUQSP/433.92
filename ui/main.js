@@ -7,17 +7,17 @@ function qruqsp_43392_main() {
     //
     this.menu = new M.panel('device', 'qruqsp_43392_main', 'menu', 'mc', 'medium', 'sectioned', 'qruqsp.43392.main.menu');
     this.menu.data = {};
-    this.menu.nplist = [];
     this.menu.sections = {
-//        'search':{'label':'', 'type':'livesearchgrid', 'livesearchcols':1,
-//            'cellClasses':[''],
-//            'hint':'Search device',
-//            'noData':'No device found',
-//            },
-        'devices':{'label':'Device', 'type':'simplegrid', 'num_cols':2,
-            'noData':'No device',
-            'addTxt':'Add Device',
-            'addFn':'M.qruqsp_43392_main.edit.open(\'M.qruqsp_43392_main.menu.open();\',0,null);'
+        'search':{'label':'', 'type':'livesearchgrid', 'livesearchcols':1,
+            'cellClasses':[''],
+            'hint':'Search device',
+            'noData':'No device found',
+            },
+        'active':{'label':'Devices', 'type':'simplegrid', 'num_cols':2,
+            'noData':'No devices setup',
+            },
+        'new':{'label':'New Devices', 'type':'simplegrid', 'num_cols':2,
+            'noData':'No new devices',
             },
     }
     this.menu.liveSearchCb = function(s, i, v) {
@@ -31,10 +31,10 @@ function qruqsp_43392_main() {
         return d.name;
     }
     this.menu.liveSearchResultRowFn = function(s, f, i, j, d) {
-        return 'M.qruqsp_43392_main.device.open(\'M.qruqsp_43392_main.menu.open();\',\'' + d.id + '\');';
+        return 'M.qruqsp_43392_main.edit.open(\'M.qruqsp_43392_main.menu.open();\',\'' + d.id + '\');';
     }
     this.menu.cellValue = function(s, i, j, d) {
-        if( s == 'devices' ) {
+        if( s == 'active' || s == 'new' ) {
             switch(j) {
                 case 0: return d.name;
                 case 1: return d.status_text;
@@ -42,20 +42,20 @@ function qruqsp_43392_main() {
         }
     }
     this.menu.rowFn = function(s, i, d) {
-        if( s == 'devices' ) {
+        if( s == 'active' || s == 'new' ) {
             return 'M.qruqsp_43392_main.edit.open(\'M.qruqsp_43392_main.menu.open();\',\'' + d.id + '\',M.qruqsp_43392_main.menu.nplist);';
             //return 'M.qruqsp_43392_main.device.open(\'M.qruqsp_43392_main.menu.open();\',\'' + d.id + '\',M.qruqsp_43392_main.device.nplist);';
         }
     }
     this.menu.open = function(cb) {
-        M.api.getJSONCb('qruqsp.43392.deviceList', {'tnid':M.curTenantID}, function(rsp) {
+        M.api.getJSONCb('qruqsp.43392.deviceList', {'tnid':M.curTenantID, 'active':'yes', 'new':'yes'}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
                 return false;
             }
             var p = M.qruqsp_43392_main.menu;
             p.data = rsp;
-            p.nplist = (rsp.nplist != null ? rsp.nplist : null);
+            console.log(rsp);
             p.refresh();
             p.show(cb);
         });
@@ -99,7 +99,7 @@ function qruqsp_43392_main() {
             'model':{'label':'Model', 'editable':'no', 'type':'text'},
             'did':{'label':'id', 'editable':'no', 'type':'text'},
             'name':{'label':'Name', 'type':'text'},
-            'status':{'label':'Status', 'type':'toggle', 'toggles':{'10':'Active', '60':'Ignore'}},
+            'status':{'label':'Status', 'type':'toggle', 'toggles':{'10':'New', '30':'Active', '60':'Ignore'}},
             }},
         'fields':{'label':'Fields', 'type':'simplegrid', 'num_cols':1,
             },
