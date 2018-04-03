@@ -20,6 +20,19 @@ function qruqsp_43392_maps(&$ciniki) {
         '30'=>'Active',
         '60'=>'Ignore',
     ));
+    $maps['devicefield'] = array(
+        'ftype'=>array(
+            '10' => 'Temperature (C)',
+            '11' => 'Temperature (F)',
+            '20' => 'Humidity (%)',
+            '30' => 'Wind Direction (Deg)',
+            '31' => 'Wind Direction (Heading)',
+            '40' => 'Wind Speed (kph)',
+            '45' => 'Wind Speed (mph)',
+            '50' => 'Rain Fall (inch)',
+        ),
+    );
+
     //
     return array('stat'=>'ok', 'maps'=>$maps);
 }

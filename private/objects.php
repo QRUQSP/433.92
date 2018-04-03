@@ -40,6 +40,7 @@ function qruqsp_43392_objects(&$ciniki) {
             'fname' => array('name'=>'JSON Field Name'),
             'name' => array('name'=>'Name', 'default'=>''),
             'flags' => array('name'=>'Options', 'default'=>'0'),
+            'ftype' => array('name'=>'Field Type', 'default'=>'0'),
             'example_value' => array('name'=>'', 'default'=>''),
             ),
         'history_table' => 'qruqsp_43392_history',

@@ -1,0 +1,5 @@
+#
+# This upgrade adds the ftype field for specifying the type of data in that field (temp, rain, etc)
+#
+ALTER TABLE qruqsp_43392_device_fields ADD COLUMN ftype smallint unsigned not null AFTER flags;
+ALTER TABLE qruqsp_43392_device_fields COMMENT='v1.02';

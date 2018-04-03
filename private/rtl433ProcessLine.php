@@ -19,12 +19,16 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
     // The following fields will be ignored when setting up the fields for a 
     // device in qruqsp_43392_device_fields. These fields are already stored as part of the device.
     //
-    $skip_fields = array('time', 'model', 'id');
+    $skip_fields = array('time', 'model', 'id', 'sensor_id');
 
     //
     // Setup the sample
     //
     $elements = json_decode($line, true);
+
+    if( isset($elements['sensor_id']) && !isset($elements['id']) ) {    
+        $elements['id'] = $elements['sensor_id'];
+    }
 
     //
     // Check for a model and id

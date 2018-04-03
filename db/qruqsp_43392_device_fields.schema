@@ -24,6 +24,17 @@
 #                       0x04 - 
 #                       0x08 - 
 #
+# ftype:            The type of field.
+#
+#                       10 - Temperature (C)
+#                       11 - Temperature (F)
+#                       20 - Humidity (%)
+#                       30 - Wind Direction (Deg)
+#                       31 - Wind Direction (Basic, N, WNW, SE...)
+#                       40 - Wind Speed (Kph)
+#                       45 - Wind Speed (mph)
+#                       50 - Rain Fall Accumulation (inches)
+#
 # example_value:    The value first read from this device
 #
 # date_added:       The UTC date and time the record was added.
@@ -37,6 +48,7 @@ create table qruqsp_43392_device_fields (
     fname varchar(250) not null,
     name varchar(250) not null,
     flags tinyint unsigned not null,
+    ftype tinyint unsigned not null,
     example_value varchar(250) not null,
     date_added datetime not null,
     last_updated datetime not null,
@@ -44,4 +56,4 @@ create table qruqsp_43392_device_fields (
     unique index (uuid),
     unique index (device_id, fname),
     index sync (tnid, uuid, last_updated)
-) ENGINE='InnoDB', COMMENT='v1.01';
+) ENGINE='InnoDB', COMMENT='v1.02';
