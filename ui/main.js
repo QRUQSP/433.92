@@ -5,37 +5,51 @@ function qruqsp_43392_main() {
     //
     // The panel to list the device
     //
-    this.menu = new M.panel('433.92 Mhz Devices', 'qruqsp_43392_main', 'menu', 'mc', 'medium', 'sectioned', 'qruqsp.43392.main.menu');
+    this.menu = new M.panel('433.92 Mhz Devices', 'qruqsp_43392_main', 'menu', 'mc', 'large narrowaside', 'sectioned', 'qruqsp.43392.main.menu');
     this.menu.data = {};
     this.menu.nplist = [];
     this.menu.sections = {
     }
     this.menu.cellValue = function(s, i, j, d) {
-        if( s == 'devices' ) {
-            switch(j) {
-                case 0: return d.name;
-            }
-        }
-    }
-    this.menu.rowFn = function(s, i, d) {
-        if( s == 'devices' ) {
-            return 'M.qruqsp_43392_main.device.open(\'M.qruqsp_43392_main.menu.open();\',\'' + d.id + '\',M.qruqsp_43392_main.device.nplist);';
+        switch(j) {
+            case 0: return d.label;
+            case 1: return d.value;
         }
     }
     this.menu.open = function(cb) {
-        M.api.getJSONCb('qruqsp.43392.deviceList', {'tnid':M.curTenantID}, function(rsp) {
+        M.api.getJSONCb('qruqsp.43392.devices', {'tnid':M.curTenantID}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
                 return false;
             }
             var p = M.qruqsp_43392_main.menu;
             p.data = rsp;
-            p.nplist = (rsp.nplist != null ? rsp.nplist : null);
+            p.sections = {};
+            for(var i in rsp.devices) {
+                p.sections[i + '_data'] = {'label':rsp.devices[i].name, 'type':'simplegrid', 'num_cols':2,
+                    'aside':'yes',
+                    'cellClasses':['label', ''],
+                    };
+                p.data[i + '_data'] = {};
+                p.data[i + '_graph'] = [];
+                var legend = [];
+                for(var j in rsp.devices[i].fields) {
+                    p.data[i + '_data'][j] = {'label':rsp.devices[i].fields[j].label, 'value':rsp.devices[i].fields[j].current_value};
+                    legend[j] = rsp.devices[i].fields[j].label;
+                    p.data[i + '_graph'][j] = rsp.devices[i].fields[j].data;
+                }
+                p.sections[i + '_graph'] = {'label':'&nbsp;', 'type':'metricsgraphics',
+                    'graphtype':'multiline',
+                    'missing_is_hidden': true,
+                    'legend':legend,
+                    };
+            }
             p.refresh();
             p.show(cb);
         });
     }
     this.menu.addButton('settings', 'Settings', 'M.startApp("qruqsp.43392.settings",null,"M.qruqsp_43392_main.menu.open();");');
+    this.menu.addButton('refresh', 'Refresh', 'M.qruqsp_43392_main.menu.open();');
     this.menu.addClose('Back');
 
     //
