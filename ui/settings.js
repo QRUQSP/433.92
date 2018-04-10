@@ -206,7 +206,7 @@ function qruqsp_43392_settings() {
     //
     // The panel to edit Device Field
     //
-    this.devicefield = new M.panel('Device Field', 'qruqsp_43392_settings', 'devicefield', 'mc', 'medium mediumaside', 'sectioned', 'qruqsp.43392.settings.devicefield');
+    this.devicefield = new M.panel('Device Field', 'qruqsp_43392_settings', 'devicefield', 'mc', 'medium', 'sectioned', 'qruqsp.43392.settings.devicefield');
     this.devicefield.data = null;
     this.devicefield.field_id = 0;
     this.devicefield.nplist = [];
