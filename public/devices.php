@@ -97,7 +97,13 @@ function qruqsp_43392_devices($ciniki) {
         foreach($rsp['devices'] as $did => $device) {
             foreach($device['fields'] as $fid => $field) {
                 foreach($field['data'] as $data_id => $data) {
-                    $rsp['devices'][$did]['fields'][$fid]['data'][$data_id]['value'] = (float)$data['value'];
+                    if( $field['ftype'] == 11 ) { 
+                        $rsp['devices'][$did]['fields'][$fid]['data'][$data_id]['value'] = ((float)$data['value'] - 32)/1.8;
+                    } elseif( $field['ftype'] == 45 ) { 
+                        $rsp['devices'][$did]['fields'][$fid]['data'][$data_id]['value'] = (float)$data['value'] * 1.609344;
+                    } else {
+                        $rsp['devices'][$did]['fields'][$fid]['data'][$data_id]['value'] = (float)$data['value'];
+                    }
                 }
                 $rsp['devices'][$did]['fields'][$fid]['current_value'] = '';
                 if( isset($field['data']) ) {

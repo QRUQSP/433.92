@@ -69,7 +69,11 @@ $devices = array();
 // -F json - output in json format for each entry
 //
 $rtl_cmd = 'rtl_433';
-$cmd = "$rtl_cmd -G -U -F json";
+if( isset($ciniki['config']['qruqsp.43392']['all.devices']) && $ciniki['config']['qruqsp.43392']['all.devices'] == 'yes' ) {
+    $cmd = "$rtl_cmd -G -U -F json";
+} else {
+    $cmd = "$rtl_cmd -R 2 -R 3 -R 8 -R 10 -R 11 -R 12 -R 13 -R 14 -R 16 -R 18 -R 19 -R 20 -R 21 -R 25 -R 26 -R 31 -R 32 -R 34 -R 35 -R 36 -R 37 -R 38 -R 39 -R 40 -R 41 -R 42 -R 47 -R 50 -R 52 -R 53 -R 54 -R 55 -R 56 -R 57 -R 66 -R 69 -R 71 -R 73 -R 74 -R 75 -R 76 -R 77 -R 78 -R 79 -R 84 -R 92 -R 94 -R 97 -U -F json";
+}
 
 $handle = popen($cmd, "r");
 $exit = 'no';
