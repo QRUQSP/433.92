@@ -17,13 +17,14 @@ function qruqsp_43392_cron_jobs(&$ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
-
+error_log('checking');
     //
     // Check to see if listener is running
     //
     if( isset($ciniki['config']['qruqsp.43392']['listener']) && $ciniki['config']['qruqsp.43392']['listener'] == 'active' ) {
-        exec('ps ax | grep rtl_433_listen.php |grep php', $pids);
+        exec('ps ax | grep rtl_433_listen.php |grep -v grep', $pids);
         if( count($pids) == 0 ) {
+        error_log('starting');
             //
             // Start the listener
             //
