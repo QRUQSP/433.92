@@ -22,7 +22,7 @@ function qruqsp_43392_cron_jobs(&$ciniki) {
     // Check to see if listener is running
     //
     if( isset($ciniki['config']['qruqsp.43392']['listener']) && $ciniki['config']['qruqsp.43392']['listener'] == 'active' ) {
-        exec('ps ax | grep rtl_433_listen.php |grep php', $pids);
+        exec('ps ax | grep rtl_433_listen.php |grep -v grep', $pids);
         if( count($pids) == 0 ) {
             //
             // Start the listener
