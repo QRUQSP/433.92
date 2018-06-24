@@ -68,7 +68,11 @@ $devices = array();
 // -U - specify time in UTC
 // -F json - output in json format for each entry
 //
-$rtl_cmd = 'rtl_433';
+if( isset($ciniki['config']['qruqsp.43392']['rtl_433_cmd']) && $ciniki['config']['qruqsp.43392']['rtl_433_cmd'] != '' ) {
+    $rtl_cmd = $ciniki['config']['qruqsp.43392']['rtl_433_cmd'];
+} else {
+    $rtl_cmd = 'rtl_433';
+}
 if( isset($ciniki['config']['qruqsp.43392']['all.devices']) && $ciniki['config']['qruqsp.43392']['all.devices'] == 'yes' ) {
     $cmd = "$rtl_cmd -G -U -F json";
 } else {
