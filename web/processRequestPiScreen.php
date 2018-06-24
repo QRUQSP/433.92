@@ -16,15 +16,7 @@
 // Returns
 // -------
 //
-function qruqsp_43392_web_processRequest(&$ciniki, $settings, $tnid, $args) {
-
-    //
-    // Check for subpages
-    //
-    if( isset($args['uri_split'][0]) && $args['uri_split'][0] == 'piscreen' ) {
-        ciniki_core_loadMethod($ciniki, 'qruqsp', '43392', 'web', 'processRequestPiScreen');
-        return qruqsp_43392_web_processRequestPiScreen($ciniki, $settings, $tnid, $args);
-    }
+function qruqsp_43392_web_processRequestPiScreen(&$ciniki, $settings, $tnid, $args) {
 
     //
     // Check to make sure the module is enabled
@@ -32,25 +24,27 @@ function qruqsp_43392_web_processRequest(&$ciniki, $settings, $tnid, $args) {
     if( !isset($ciniki['tenant']['modules']['qruqsp.43392']) ) {
         return array('stat'=>'404', 'err'=>array('code'=>'qruqsp.43392.5', 'msg'=>"I'm sorry, the page you requested does not exist."));
     }
-
     $page = array(
         'title'=>$args['page_title'],
         'breadcrumbs'=>$args['breadcrumbs'],
         'blocks'=>array(),
         );
 
-    
+    $page['response']['web-app'] = 'yes';
+    $page['fullscreen-content'] = 'yes';
+
     //
     // Get the list of devices that are active, and their fields and latest data
     //
     $dt = new DateTime('now', new DateTimezone('UTC'));
-    $dt->sub(new DateInterval('PT5M'));
+    $dt->sub(new DateInterval('PT10M'));
     $strsql = "SELECT devices.id, "
         . "devices.name, "
         . "IFNULL(fields.id, 0) AS field_id, "
         . "IFNULL(fields.name, '') AS field_name, "
+        . "IFNULL(fields.ftype, '') AS field_type, "
         . "IFNULL(data.sample_date, '') AS sample_date, "
-        . "IFNULL(data.fvalue, '') AS fvalue "
+        . "IFNULL(data.fvalue, '??') AS fvalue "
         . "FROM qruqsp_43392_devices AS devices "
         . "INNER JOIN qruqsp_43392_device_fields AS fields ON ("
             . "devices.id = fields.device_id "
@@ -69,20 +63,49 @@ function qruqsp_43392_web_processRequest(&$ciniki, $settings, $tnid, $args) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
     $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
         array('container'=>'devices', 'fname'=>'id', 'fields'=>array('id', 'name')),
-        array('container'=>'fields', 'fname'=>'field_id', 'fields'=>array('id'=>'field_id', 'name'=>'field_name', 'sample_date', 'fvalue')),
+        array('container'=>'fields', 'fname'=>'field_id', 'fields'=>array('id'=>'field_id', 'ftype'=>'field_type', 'name'=>'field_name', 'sample_date', 'fvalue')),
         ));
     if( $rc['stat'] != 'ok' ) {
         return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.22', 'msg'=>'Unable to load devices', 'err'=>$rc['err']));
     }
     $devices = isset($rc['devices']) ? $rc['devices'] : array();
 
-    foreach($devices as $device) {
-        $info = '';
+    $content = '<table cellpadding="0" cellspacing="0">';
+    $content .= "<tr><td><b>Sensor</b></td><td><b>Temp</b></td><td><b>Humidity</b></td></tr>";
+
+    foreach($devices as $device) {  
+        $temperature = '';
+        $humidity = '';
         foreach($device['fields'] as $field) {
-            $info .= "<b>{$field['name']}</b>: {$field['fvalue']}<br/>";
+            if( $field['ftype'] == 10 ) {
+                $temperature = $field['fvalue'];
+            } elseif( $field['ftype'] == 11 ) {
+                $temperature = sprintf("%.1f", ($field['fvalue'] - 32)/1.8);
+            } elseif( $field['ftype'] == 20 ) {
+                $humidity = $field['fvalue'];
+            }
         }
-        $page['blocks'][] = array('type'=>'content', 'title'=>$device['name'], 'content'=>$info);
+        if( $temperature != '' && $temperature != '??' ) {
+            $temperature .= '&deg;C';
+        }
+        if( $humidity != '' && $humidity != '??' ) {
+            $humidity .= '%';
+        }
+        $content .= "<tr><td>{$device['name']}</td><td>$temperature</td><td>$humidity</td></tr>";
     }
+    $content .= '</table>';
+
+    if( !isset($ciniki['response']['blocks-css']) ) {
+        $ciniki['response']['blocks-css'] = '';
+    }
+    $ciniki['response']['blocks-css'] .= "body {overflow: hidden; scroll: no;}"
+        . "table {border-collapse: collapse; width: 100%; width: 100vw; height: 100vh;}"
+        . "table tr:nth-child(odd) { background: #ddd; }"
+        . "table td { text-align: center; vertical-align: middle; padding-left: 0.5em; padding-right: 0.5em;}"
+        . "table td:first-child { text-align: right; }"
+        . "";
+
+    $page['blocks'][] = array('type'=>'content', 'html'=>$content);
 
     return array('stat'=>'ok', 'page'=>$page);
 }
