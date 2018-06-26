@@ -95,10 +95,26 @@ function qruqsp_43392_web_processRequestPiScreen(&$ciniki, $settings, $tnid, $ar
     }
     $content .= '</table>';
 
+    //
+    // Setup CSS for small screen
+    //
     if( !isset($ciniki['response']['blocks-css']) ) {
         $ciniki['response']['blocks-css'] = '';
     }
     $ciniki['response']['blocks-css'] .= "body {overflow: hidden; scroll: no;}"
+        . "table {border-collapse: collapse; width: 100%; width: 100vw; height: 100vh;}"
+        . "table tr:nth-child(odd) { background: #ddd; }"
+        . "table td { text-align: center; vertical-align: middle; padding-left: 0.5em; padding-right: 0.5em;}"
+        . "table td:first-child { text-align: right; }"
+        . "";
+
+    //
+    // Setup JS to refresh the page every 5 minutes
+    //
+    if( !isset($ciniki['response']['blocks-js']) ) {
+        $ciniki['response']['blocks-js'] = '';
+    }
+    $ciniki['response']['blocks-js'] .= "body {overflow: hidden; scroll: no;}"
         . "table {border-collapse: collapse; width: 100%; width: 100vw; height: 100vh;}"
         . "table tr:nth-child(odd) { background: #ddd; }"
         . "table td { text-align: center; vertical-align: middle; padding-left: 0.5em; padding-right: 0.5em;}"
