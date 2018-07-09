@@ -13,6 +13,7 @@
 function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = array()) {
   
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectUpdate');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
 
     //
@@ -119,8 +120,8 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
                 'fname' => $k,
                 'name' => $k,
                 'flags' => 0,
-                'example_value' => $v,
-                'last_sample_date' => '',
+                'last_value' => $v,
+                'last_date' => $dt->format('Y-m-d H:i:s'),
                 );
             //
             // Add the field
@@ -176,6 +177,17 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
                 if( $rc['stat'] == 'exists' ) {
                     continue;
                 }
+                return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.11', 'msg'=>'Unable to add data sample', 'err'=>$rc['err']));
+            }
+
+            //
+            // Update the field with the last value
+            //
+            $rc = ciniki_core_objectUpdate($ciniki, $tnid, 'qruqsp.43392.devicefield', $field['id'], array(
+                'last_value'=>$elements[$name],
+                'last_date'=>$dt->format('Y-m-d H:i:s'),
+                ), 0x04);
+            if( $rc['stat'] != 'ok' ) {
                 return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.11', 'msg'=>'Unable to add data sample', 'err'=>$rc['err']));
             }
         }

@@ -41,7 +41,8 @@ function qruqsp_43392_objects(&$ciniki) {
             'name' => array('name'=>'Name', 'default'=>''),
             'flags' => array('name'=>'Options', 'default'=>'0'),
             'ftype' => array('name'=>'Field Type', 'default'=>'0'),
-            'example_value' => array('name'=>'', 'default'=>''),
+            'last_value' => array('name'=>'Last Value', 'default'=>''),
+            'last_date' => array('name'=>'Last Value Date', 'default'=>''),
             ),
         'history_table' => 'qruqsp_43392_history',
         );

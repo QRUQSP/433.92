@@ -47,7 +47,8 @@ function qruqsp_43392_deviceFieldSearch($ciniki) {
         . "qruqsp_43392_device_fields.fname, "
         . "qruqsp_43392_device_fields.name, "
         . "qruqsp_43392_device_fields.flags, "
-        . "qruqsp_43392_device_fields.example_value "
+        . "qruqsp_43392_device_fields.last_value, "
+        . "qruqsp_43392_device_fields.last_date "
         . "FROM qruqsp_43392_device_fields "
         . "WHERE qruqsp_43392_device_fields.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND ("
@@ -63,7 +64,7 @@ function qruqsp_43392_deviceFieldSearch($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
     $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
         array('container'=>'fields', 'fname'=>'id', 
-            'fields'=>array('id', 'device_id', 'fname', 'name', 'flags', 'example_value')),
+            'fields'=>array('id', 'device_id', 'fname', 'name', 'flags', 'last_value', 'last_date')),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;

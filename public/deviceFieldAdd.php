@@ -25,7 +25,6 @@ function qruqsp_43392_deviceFieldAdd(&$ciniki) {
         'name'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Name'),
         'flags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Options'),
         'ftype'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Field Type'),
-        'example_value'=>array('required'=>'no', 'blank'=>'yes', 'name'=>''),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;

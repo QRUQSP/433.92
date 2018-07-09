@@ -131,22 +131,21 @@ function qruqsp_43392_deviceGet($ciniki) {
             . "IF( (flags&0x01) = 0x01, 'Yes', 'No') AS store, "
             . "IF( (flags&0x02) = 0x02, 'Yes', 'No') AS publish, "
             . "f.ftype, "
-            . "f.example_value, "
-            . "d.fvalue, "
-            . "d.sample_date "
+            . "f.last_value AS fvalue, "
+            . "f.last_date AS sample_date "
             . "FROM qruqsp_43392_device_fields AS f "
-            . "LEFT JOIN qruqsp_43392_device_data AS d ON ("
-                . "f.id = d.field_id "
-                . "AND d.sample_date = '" . ciniki_core_dbQuote($ciniki, $sample_date) . "' "
-                . "AND d.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-                . ") "
+//            . "LEFT JOIN qruqsp_43392_device_data AS d ON ("
+//                . "f.id = d.field_id "
+//                . "AND d.sample_date = '" . ciniki_core_dbQuote($ciniki, $sample_date) . "' "
+//                . "AND d.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+//                . ") "
             . "WHERE f.device_id = '" . ciniki_core_dbQuote($ciniki, $args['device_id']) . "' "
             . "AND f.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "";
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
             array('container'=>'fields', 'fname'=>'id', 
-                'fields'=>array('id', 'device_id', 'fname', 'name', 'flags', 'store', 'publish', 'ftype', 'example_value', 'sample_date', 'fvalue'),
+                'fields'=>array('id', 'device_id', 'fname', 'name', 'flags', 'store', 'publish', 'ftype', 'sample_date', 'fvalue'),
                 'maps'=>array('ftype'=>$maps['devicefield']['ftype']),
                 ),
             ));

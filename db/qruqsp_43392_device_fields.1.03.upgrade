@@ -1,0 +1,7 @@
+#
+# This upgrade adds the last value of the device to be stored in the table.
+#
+ALTER TABLE qruqsp_43392_device_fields ADD COLUMN last_value varchar(250) not null AFTER ftype;
+ALTER TABLE qruqsp_43392_device_fields ADD COLUMN last_date datetime not null AFTER last_value;
+ALTER TABLE qruqsp_43392_device_fields DROP COLUMN example_value;
+ALTER TABLE qruqsp_43392_device_fields COMMENT='v1.03';

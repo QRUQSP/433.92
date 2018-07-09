@@ -63,7 +63,6 @@ function qruqsp_43392_deviceFieldGet($ciniki) {
             'name'=>'',
             'flags'=>'0',
             'ftype'=>'0',
-            'example_value'=>'',
         );
     }
 
@@ -77,7 +76,8 @@ function qruqsp_43392_deviceFieldGet($ciniki) {
             . "qruqsp_43392_device_fields.name, "
             . "qruqsp_43392_device_fields.flags, "
             . "qruqsp_43392_device_fields.ftype, "
-            . "qruqsp_43392_device_fields.example_value "
+            . "qruqsp_43392_device_fields.last_value, "
+            . "qruqsp_43392_device_fields.last_date "
             . "FROM qruqsp_43392_device_fields "
             . "WHERE qruqsp_43392_device_fields.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND qruqsp_43392_device_fields.id = '" . ciniki_core_dbQuote($ciniki, $args['field_id']) . "' "
@@ -85,7 +85,7 @@ function qruqsp_43392_deviceFieldGet($ciniki) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
             array('container'=>'fields', 'fname'=>'id', 
-                'fields'=>array('device_id', 'fname', 'name', 'flags', 'ftype', 'example_value'),
+                'fields'=>array('device_id', 'fname', 'name', 'flags', 'ftype', 'last_value', 'last_date'),
                 ),
             ));
         if( $rc['stat'] != 'ok' ) {

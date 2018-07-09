@@ -122,8 +122,8 @@ function qruqsp_43392_settings() {
                 case 1: return d.store;
                 case 2: return d.publish;
                 case 3: return d.ftype;
-                case 4: return d.sample_date;
-                case 5: return d.fvalue;
+                case 4: return d.fvalue;
+                case 5: return d.sample_date;
             }
         }
     }
@@ -226,7 +226,7 @@ function qruqsp_43392_settings() {
                 '40':'Wind Speed (kph)',
                 '45':'Wind Speed (mph)',
                 }},
-            'example_value':{'label':'Example', 'editable':'no', 'type':'text'},
+            'last_value':{'label':'Example', 'editable':'no', 'type':'text'},
             }},
         '_buttons':{'label':'', 'buttons':{
             'save':{'label':'Save', 'fn':'M.qruqsp_43392_settings.devicefield.save();'},

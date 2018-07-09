@@ -35,7 +35,8 @@
 #                       45 - Wind Speed (mph)
 #                       50 - Rain Fall Accumulation (inches)
 #
-# example_value:    The value first read from this device
+# last_value:       The last field value received from the device.
+# last_date:        The UTC date and time the last field value was received from the device.
 #
 # date_added:       The UTC date and time the record was added.
 # last_updated:     The UTC date and time the record was last updated.
@@ -49,11 +50,12 @@ create table qruqsp_43392_device_fields (
     name varchar(250) not null,
     flags tinyint unsigned not null,
     ftype tinyint unsigned not null,
-    example_value varchar(250) not null,
+    last_value varchar(250) not null,
+    last_date datetime not null,
     date_added datetime not null,
     last_updated datetime not null,
     primary key (id),
     unique index (uuid),
     unique index (device_id, fname),
     index sync (tnid, uuid, last_updated)
-) ENGINE='InnoDB', COMMENT='v1.02';
+) ENGINE='InnoDB', COMMENT='v1.03';
