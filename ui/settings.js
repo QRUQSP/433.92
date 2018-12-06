@@ -18,6 +18,8 @@ function qruqsp_43392_settings() {
             },
         'new':{'label':'New Devices', 'type':'simplegrid', 'num_cols':2,
             'noData':'No new devices',
+            'addTxt':'Clear List',
+            'addFn':'M.qruqsp_43392_settings.menu.clearList();',
             },
     }
     this.menu.liveSearchCb = function(s, i, v) {
@@ -56,6 +58,18 @@ function qruqsp_43392_settings() {
             var p = M.qruqsp_43392_settings.menu;
             p.data = rsp;
             console.log(rsp);
+            p.refresh();
+            p.show(cb);
+        });
+    }
+    this.menu.clearList = function() {
+        M.api.getJSONCb('qruqsp.43392.deviceList', {'tnid':M.curTenantID, 'active':'yes', 'new':'yes', 'action':'clearnew'}, function(rsp) {
+            if( rsp.stat != 'ok' ) {
+                M.api.err(rsp);
+                return false;
+            }
+            var p = M.qruqsp_43392_settings.menu;
+            p.data = rsp;
             p.refresh();
             p.show(cb);
         });

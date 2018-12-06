@@ -22,6 +22,7 @@ function qruqsp_43392_deviceList($ciniki) {
         'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'),
         'active'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'List Active Devices'),
         'new'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'List New Devices'),
+        'action'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Action'),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
@@ -48,6 +49,48 @@ function qruqsp_43392_deviceList($ciniki) {
     $maps = $rc['maps'];
 
     $rsp = array('stat'=>'ok');
+
+    //
+    // Check if new list should be cleared
+    //
+    if( isset($args['action']) && $args['action'] == 'clearnew' ) {
+        $strsql = "SELECT qruqsp_43392_devices.id, qruqsp_43392_devices.uuid, "
+            . "qruqsp_43392_device_fields.id AS field_id "
+            . "qruqsp_43392_device_fields.uuid AS field_uuid "
+            . "FROM qruqsp_43392_devices "
+            . "LEFT JOIN qruqsp_43392_device_fields ON ("
+                . "qruqsp_43392_devices.id = qruqsp_43392_device_fields.device_id "
+                . "AND qruqsp_43392_device_fields.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+                . ") "
+            . "WHERE qruqsp_43392_devices.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+            . "AND qruqsp_43392_devices.status = 10 "
+            . "ORDER BY qruqsp_43392_devices.status "
+            . "";
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+        $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'qruqsp.43392', array(
+            array('container'=>'devices', 'fname'=>'id', 'fields'=>array('id', 'uuid')),
+            array('container'=>'fields', 'fname'=>'field_id', 'fields'=>array('id'=>'field_id','uuid'=>'field_uuid')),
+            ));
+        if( $rc['stat'] != 'ok' ) {
+            return $rc;
+        }
+        $devices = isset($rc['devices']) ? $rc['devices'] : array();
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectDelete');
+        foreach($devices as $did => $device) {
+            if( isset($device['fields']) ) {
+                foreach($device['fields'] as $fid => $field) {
+                    $rc = ciniki_core_objectDelete($ciniki, $args['tnid'], 'qruqsp.43392.devicefield', $field['id'], $field['uuid'], 0x07);
+                    if( $rc['stat'] != 'ok' ) {
+                        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.24', 'msg'=>'Unable to remove device field', 'err'=>$rc['err']));
+                    }
+                }
+            }
+            $rc = ciniki_core_objectDelete($ciniki, $args['tnid'], 'qruqsp.43392.device', $device['id'], $device['uuid'], 0x07);
+            if( $rc['stat'] != 'ok' ) {
+                return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.25', 'msg'=>'Unable to remove device', 'err'=>$rc['err']));
+            }
+        }
+    }
 
     //
     // Get the list of active devices
