@@ -55,7 +55,7 @@ function qruqsp_43392_deviceList($ciniki) {
     //
     if( isset($args['action']) && $args['action'] == 'clearnew' ) {
         $strsql = "SELECT qruqsp_43392_devices.id, qruqsp_43392_devices.uuid, "
-            . "qruqsp_43392_device_fields.id AS field_id "
+            . "qruqsp_43392_device_fields.id AS field_id, "
             . "qruqsp_43392_device_fields.uuid AS field_uuid "
             . "FROM qruqsp_43392_devices "
             . "LEFT JOIN qruqsp_43392_device_fields ON ("
@@ -66,7 +66,7 @@ function qruqsp_43392_deviceList($ciniki) {
             . "AND qruqsp_43392_devices.status = 10 "
             . "ORDER BY qruqsp_43392_devices.status "
             . "";
-        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
         $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'qruqsp.43392', array(
             array('container'=>'devices', 'fname'=>'id', 'fields'=>array('id', 'uuid')),
             array('container'=>'fields', 'fname'=>'field_id', 'fields'=>array('id'=>'field_id','uuid'=>'field_uuid')),
@@ -76,15 +76,36 @@ function qruqsp_43392_deviceList($ciniki) {
         }
         $devices = isset($rc['devices']) ? $rc['devices'] : array();
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectDelete');
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
         foreach($devices as $did => $device) {
+            //
+            // Remove the fields
+            //
             if( isset($device['fields']) ) {
                 foreach($device['fields'] as $fid => $field) {
+                    //
+                    // Remove the data
+                    //
+                    $strsql = "DELETE FROM qruqsp_43392_device_data "
+                        . "WHERE field_id = '" . ciniki_core_dbQuote($ciniki, $args['field_id']) . "' "
+                        . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+                        . "";
+                    $rc = ciniki_core_dbDelete($ciniki, $strsql, 'qruqsp.43392');
+                    if( $rc['stat'] != 'ok' ) {
+                        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.26', 'msg'=>'Error deleting device data', 'err'=>$rc['err']));
+                    }
+                    //
+                    // Delete the field
+                    //
                     $rc = ciniki_core_objectDelete($ciniki, $args['tnid'], 'qruqsp.43392.devicefield', $field['id'], $field['uuid'], 0x07);
                     if( $rc['stat'] != 'ok' ) {
                         return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.24', 'msg'=>'Unable to remove device field', 'err'=>$rc['err']));
                     }
                 }
             }
+            //
+            // Delete the the device
+            //
             $rc = ciniki_core_objectDelete($ciniki, $args['tnid'], 'qruqsp.43392.device', $device['id'], $device['uuid'], 0x07);
             if( $rc['stat'] != 'ok' ) {
                 return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.25', 'msg'=>'Unable to remove device', 'err'=>$rc['err']));
