@@ -1,0 +1,5 @@
+#
+# Add the flags field
+#
+ALTER TABLE qruqsp_43392_devices ADD COLUMN flags tinyint unsigned not null AFTER status;
+ALTER TABLE qruqsp_43392_devices COMMENT='v1.02';

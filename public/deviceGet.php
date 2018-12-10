@@ -105,7 +105,7 @@ function qruqsp_43392_deviceGet($ciniki) {
         //
         // Get the latest data sample_date 
         //
-        $strsql = "SELECT MAX(d.sample_date) AS sample_date "
+/*        $strsql = "SELECT MAX(d.sample_date) AS sample_date "
             . "FROM qruqsp_43392_device_fields AS f "
             . "LEFT JOIN qruqsp_43392_device_data AS d ON ("
                 . "f.id = d.field_id "
@@ -119,20 +119,21 @@ function qruqsp_43392_deviceGet($ciniki) {
             return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.23', 'msg'=>'Unable to load device', 'err'=>$rc['err']));
         }
         $sample_date = isset($rc['item']['sample_date']) ? $rc['item']['sample_date'] : '';
-
+*/
         //
         // Get the list of fields
         //
         $strsql = "SELECT f.id, "
             . "f.device_id, "
             . "f.fname, "
-            . "f.name, "
-            . "f.flags, "
-            . "IF( (flags&0x01) = 0x01, 'Yes', 'No') AS store, "
-            . "IF( (flags&0x02) = 0x02, 'Yes', 'No') AS publish, "
+//            . "f.name, "
+//            . "f.flags, "
+//            . "IF( (flags&0x01) = 0x01, 'Yes', 'No') AS store, "
+//            . "IF( (flags&0x02) = 0x02, 'Yes', 'No') AS publish, "
             . "f.ftype, "
-            . "f.last_value AS fvalue, "
-            . "f.last_date AS sample_date "
+            . "f.ftype AS ftype_text "
+//            . "f.last_value AS fvalue, "
+//            . "f.last_date AS sample_date "
             . "FROM qruqsp_43392_device_fields AS f "
 //            . "LEFT JOIN qruqsp_43392_device_data AS d ON ("
 //                . "f.id = d.field_id "
@@ -145,8 +146,9 @@ function qruqsp_43392_deviceGet($ciniki) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
             array('container'=>'fields', 'fname'=>'id', 
-                'fields'=>array('id', 'device_id', 'fname', 'name', 'flags', 'store', 'publish', 'ftype', 'sample_date', 'fvalue'),
-                'maps'=>array('ftype'=>$maps['devicefield']['ftype']),
+                'fields'=>array('id', 'device_id', 'fname', 'ftype', 'ftype_text'),
+//                'fields'=>array('id', 'device_id', 'fname', 'name', 'flags', 'store', 'publish', 'ftype', 'sample_date', 'fvalue'),
+                'maps'=>array('ftype_text'=>$maps['devicefield']['ftype']),
                 ),
             ));
         if( $rc['stat'] != 'ok' ) {

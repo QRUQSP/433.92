@@ -22,6 +22,8 @@ function qruqsp_43392_maps(&$ciniki) {
     ));
     $maps['devicefield'] = array(
         'ftype'=>array(
+            '0' => 'Unknown',
+            '1' => 'Ignored',
             '10' => 'Temperature (C)',
             '11' => 'Temperature (F)',
             '20' => 'Humidity (%)',
@@ -29,7 +31,7 @@ function qruqsp_43392_maps(&$ciniki) {
             '31' => 'Wind Direction (Heading)',
             '40' => 'Wind Speed (kph)',
             '45' => 'Wind Speed (mph)',
-            '50' => 'Rain Fall (inch)',
+            '50' => 'Rain Fall (1/100th inch)',
         ),
     );
 

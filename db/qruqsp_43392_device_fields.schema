@@ -16,27 +16,30 @@
 # fname:            The name of the field in the rtl_433 json output
 #
 # name:             The label to use in the UI for this field. Defaults to name.
+#                   ** No longer used **
 #
-# flags:            The options for the field.
+# flags:            The options for the field.  ** No longer used **
 #
 #                       0x01 - Store data for this field
 #                       0x02 - Publish on website
 #                       0x04 - 
 #                       0x08 - 
 #
-# ftype:            The type of field.
+# ftype:            The type of fields recognized by the weather module.
 #
 #                       10 - Temperature (C)
 #                       11 - Temperature (F)
 #                       20 - Humidity (%)
 #                       30 - Wind Direction (Deg)
-#                       31 - Wind Direction (Basic, N, WNW, SE...)
+#                       31 - 
 #                       40 - Wind Speed (Kph)
 #                       45 - Wind Speed (mph)
-#                       50 - Rain Fall Accumulation (inches)
+#                       50 - Rain Fall Accumulation (1/100th of inch increments, typically rainfall_raw)
 #
-# last_value:       The last field value received from the device.
+# last_value:       The last field value received from the device. 
+#                   **This field is not used, generated high load updating this field.**
 # last_date:        The UTC date and time the last field value was received from the device.
+#                   **This field is not used, generated high load updating this field.**
 #
 # date_added:       The UTC date and time the record was added.
 # last_updated:     The UTC date and time the record was last updated.

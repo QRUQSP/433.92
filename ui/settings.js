@@ -2,6 +2,21 @@
 // This is the settings app for the 43392 module
 //
 function qruqsp_43392_settings() {
+    
+    //
+    // The list of availabe field types
+    //
+    this.fieldTypes = {
+        '0':'Unknown',
+        '1':'Ignored',
+        '10':'Temperature (C)',
+        '11':'Temperature (F)',
+        '20':'Humidity (%)',
+        '30':'Wind Direction (Deg)',
+        '40':'Wind Speed (kph)',
+        '45':'Wind Speed (mph)',
+        '50':'Rainfall Accumulated (1/100")',
+        };
     //
     // The panel to list the device
     //
@@ -104,7 +119,7 @@ function qruqsp_43392_settings() {
     //
     // The panel to edit Device
     //
-    this.edit = new M.panel('Device', 'qruqsp_43392_settings', 'edit', 'mc', 'large narrowaside', 'sectioned', 'qruqsp.43392.settings.edit');
+    this.edit = new M.panel('Device', 'qruqsp_43392_settings', 'edit', 'mc', 'medium mediumaside', 'sectioned', 'qruqsp.43392.settings.edit');
     this.edit.data = null;
     this.edit.device_id = 0;
     this.edit.nplist = [];
@@ -115,8 +130,11 @@ function qruqsp_43392_settings() {
             'name':{'label':'Name', 'type':'text'},
             'status':{'label':'Status', 'type':'toggle', 'toggles':{'10':'New', '30':'Active', '60':'Ignore'}},
             }},
-        'fields':{'label':'Fields', 'type':'simplegrid', 'num_cols':6,
-            'headerValues':['Name', 'Store', 'Publish', 'Type', 'Last Value', 'Last Date'],
+//        'fields':{'label':'', 'fields':{
+//            }},
+        'fields':{'label':'Fields', 'type':'simplegrid', 'num_cols':2,
+//            'headerValues':['Name', 'Store', 'Publish', 'Type', 'Last Value', 'Last Date'],
+            'headerValues':['Name', 'Type'],
             },
         '_buttons':{'label':'', 'buttons':{
             'save':{'label':'Save', 'fn':'M.qruqsp_43392_settings.edit.save();'},
@@ -132,12 +150,8 @@ function qruqsp_43392_settings() {
     this.edit.cellValue = function(s, i, j, d) {
         if( s == 'fields' ) {
             switch(j) {
-                case 0: return d.name;
-                case 1: return d.store;
-                case 2: return d.publish;
-                case 3: return d.ftype;
-                case 4: return d.fvalue;
-                case 5: return d.sample_date;
+                case 0: return d.fname;
+                case 1: return d.ftype_text;
             }
         }
     }
@@ -156,6 +170,13 @@ function qruqsp_43392_settings() {
             }
             var p = M.qruqsp_43392_settings.edit;
             p.data = rsp.device;
+            p.sections.fields.fields = {};
+            for(var i in rsp.device.fields) {
+                console.log(M.qruqsp_43392_settings.fieldTypes);
+                p.sections.fields.fields['field_' + rsp.device.fields[i].id] = {'label':rsp.device.fields[i].fname, 
+                    'type':'select', 'options':M.qruqsp_43392_settings.fieldTypes};
+                p.data['field_' + rsp.device.fields[i].id] = rsp.device.fields[i].ftype;
+            }
             console.log(rsp.device);
             p.refresh();
             p.show(cb);
@@ -228,18 +249,9 @@ function qruqsp_43392_settings() {
         'general':{'label':'', 'fields':{
             'device_id':{'label':'Device', 'editable':'no', 'type':'text'},
             'fname':{'label':'JSON Field Name', 'editable':'no', 'type':'text'},
-            'name':{'label':'Name', 'type':'text'},
-            'flags':{'label':'Options', 'type':'flags', 'flags':{'1':{'name':'Store'}, '2':{'name':'Visible'},}},
-            'ftype':{'label':'Data', 'type':'select', 'options':{
-                '0':'Unknown',
-                '10':'Temperature (C)',
-                '11':'Temperature (F)',
-                '20':'Humidity (%)',
-                '30':'Wind Direction (Degrees)',
-                '31':'Wind Direction (N, SE, WNW)',
-                '40':'Wind Speed (kph)',
-                '45':'Wind Speed (mph)',
-                }},
+//            'name':{'label':'Name', 'type':'text'},
+//            'flags':{'label':'Options', 'type':'flags', 'flags':{'1':{'name':'Store'}, '2':{'name':'Visible'},}},
+            'ftype':{'label':'Data', 'type':'select', 'options':this.fieldTypes},
             'last_value':{'label':'Example', 'editable':'no', 'type':'text'},
             }},
         '_buttons':{'label':'', 'buttons':{

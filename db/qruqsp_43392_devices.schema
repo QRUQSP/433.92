@@ -22,6 +22,13 @@
 #                       30 - Active
 #                       60 - Ignore (Do not collect data about this device)
 #
+# flags:            The options for the device.
+#
+#                       0x01 - Battery Low
+#                       0x02 - 
+#                       0x04 - 
+#                       0x08 - 
+#
 # date_added:       The UTC date and time the record was added.
 # last_updated:     The UTC date and time the record was last updated.
 #
@@ -33,10 +40,11 @@ create table qruqsp_43392_devices (
     did varchar(50) not null,
     name varchar(250) not null,
     status tinyint unsigned not null,
+    flags tinyint unsigned not null,
     date_added datetime not null,
     last_updated datetime not null,
     primary key (id),
     unique index (uuid),
     unique index (tnid, model, did),
     index sync (tnid, uuid, last_updated)
-) ENGINE='InnoDB', COMMENT='v1.01';
+) ENGINE='InnoDB', COMMENT='v1.02';
