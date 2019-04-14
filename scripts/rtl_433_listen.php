@@ -3,8 +3,8 @@
 //
 // Description
 // -----------
-// This script will launch rtl_power to listen in a frequency range and import
-// the dbm values into the database.
+// This script will launch rtl_433 to listen for devices transmitting
+// on 433.92Mhz.
 //
 
 //
@@ -20,7 +20,6 @@ if( !file_exists($ciniki_root . '/ciniki-api.ini') ) {
 require_once($ciniki_root . '/ciniki-mods/core/private/loadMethod.php');
 require_once($ciniki_root . '/ciniki-mods/core/private/init.php');
 
-print "$ciniki_root\n";
 //
 // Initialize Ciniki
 //

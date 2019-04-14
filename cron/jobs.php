@@ -2,7 +2,7 @@
 //
 // Description
 // -----------
-// This function checks the certification expirations for any expiration messages that should be sent.
+// This function checks if the 433 listener should be running and starts it if not.
 //
 // Arguments
 // ---------
@@ -17,21 +17,21 @@ function qruqsp_43392_cron_jobs(&$ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
-error_log('checking');
+
     //
     // Check to see if listener is running
     //
     if( isset($ciniki['config']['qruqsp.43392']['listener']) && $ciniki['config']['qruqsp.43392']['listener'] == 'active' ) {
         exec('ps ax | grep rtl_433_listen.php |grep -v grep', $pids);
         if( count($pids) == 0 ) {
-        error_log('starting');
             //
             // Start the listener
+            //
+            // FIXME: Update to used the config file root_dir
             //
             error_log("Starting Listener: qruqsp-mods/43392/scripts/rtl_433_listen.php");
             exec('php /ciniki/sites/qruqsp.local/site/qruqsp-mods/43392/scripts/rtl_433_listen.php >> ' . $ciniki['config']['qruqsp.core']['log_dir'] . '/43392.log 2>&1 &');
         }
-
     }
 
     return array('stat'=>'ok');
