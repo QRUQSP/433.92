@@ -40,7 +40,7 @@ function qruqsp_43392_checkAccess(&$ciniki, $tnid, $method) {
     // Users who are an owner or employee of a tenant can see the tenant alerts
     //
     $strsql = "SELECT tnid, user_id "
-        . "FROM qruqsp_tenant_users "
+        . "FROM ciniki_tenant_users "
         . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND user_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['user']['id']) . "' "
         . "AND package = 'ciniki' "
