@@ -43,7 +43,7 @@ function qruqsp_43392_checkAccess(&$ciniki, $tnid, $method) {
         . "FROM qruqsp_tenant_users "
         . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND user_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['user']['id']) . "' "
-        . "AND package = 'qruqsp' "
+        . "AND package = 'ciniki' "
         . "AND status = 10 "
         . "AND (permission_group = 'owners' OR permission_group = 'employees' OR permission_group = 'resellers') "
         . "";
