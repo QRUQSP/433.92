@@ -65,6 +65,31 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
     $ciniki['43392']['last_id'] = $elements['id'];
     $ciniki['43392']['last_time'] = $elements['time'];
 
+    //
+    // Acurite 5n1 sends data split into 2 messages. Cache first one until second arrives
+    //
+    if( $elements['model'] == 'Acurite 5n1 sensor' 
+        && ($elements['message_type'] == 56 || $elements['message_type'] == 49) 
+        ) {
+        
+        //
+        // Check if message in cache
+        //
+        $elements['dt'] = new DateTime($elements['time']);
+        $dt = clone $elements['dt'];
+        $dt->sub(new DateInterval('PT2M'));
+        if( isset($ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']]) 
+            && $ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']]['dt'] > $dt
+            && $ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']]['message_type'] != $elements['message_type'] 
+            ) {
+            $elements = array_merge($ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']], $elements);
+            unset($ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']]);
+        } else {
+            $ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']] = $elements;
+            return array('stat'=>'ok');
+        }
+    }
+
 /*    //
     // Parse the time in UTC and normalize to current minute.
     //
