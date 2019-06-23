@@ -27,6 +27,13 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
     $skip_fields = array('time', 'model', 'id', 'sensor_id');
 
     //
+    // Check if json should be logged
+    //
+    if( isset($ciniki['config']['qruqsp.43392']['json.logging']) && $ciniki['config']['qruqsp.43392']['json.logging'] == 'yes' ) {
+        error_log($line); 
+    }
+
+    //
     // Setup the sample
     //
     $elements = json_decode($line, true);
@@ -88,6 +95,16 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
             $ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']] = $elements;
             return array('stat'=>'ok');
         }
+    }
+
+    //
+    // Check if elements should be logged
+    //
+
+    if( isset($ciniki['config']['qruqsp.43392']['elements.logging']) 
+        && $ciniki['config']['qruqsp.43392']['elements.logging'] == 'yes' 
+        ) {
+        error_log(print_r($elements, true));
     }
 
 /*    //
