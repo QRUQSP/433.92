@@ -29,8 +29,15 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
     //
     // Check if json should be logged
     //
-    if( isset($ciniki['config']['qruqsp.43392']['json.logging']) && $ciniki['config']['qruqsp.43392']['json.logging'] == 'yes' ) {
-        error_log($line); 
+    if( isset($ciniki['config']['qruqsp.43392']['json.logging']) 
+        && $ciniki['config']['qruqsp.43392']['json.logging'] == 'yes' 
+        && isset($ciniki['config']['qruqsp.core']['log_dir'])
+        && $ciniki['config']['qruqsp.core']['log_dir'] != '' 
+        ) {
+        $dt = new DateTime('now', new DateTimezone('UTC'));
+        file_put_contents($ciniki['config']['qruqsp.core']['log_dir'] . '/qruqsp.43392.json.' . $dt->format('Y-m') . '.log',  
+            '[' . $dt->format('d/M/Y:H:i:s O') . '] ' . $line . "\n",
+            FILE_APPEND);
     }
 
     //
@@ -100,19 +107,17 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
     //
     // Check if elements should be logged
     //
-
     if( isset($ciniki['config']['qruqsp.43392']['elements.logging']) 
         && $ciniki['config']['qruqsp.43392']['elements.logging'] == 'yes' 
+        && isset($ciniki['config']['qruqsp.core']['log_dir'])
+        && $ciniki['config']['qruqsp.core']['log_dir'] != '' 
         ) {
-        error_log(print_r($elements, true));
+        $dt = new DateTime('now', new DateTimezone('UTC'));
+        file_put_contents($ciniki['config']['qruqsp.core']['log_dir'] . '/qruqsp.43392.elements.' . $dt->format('Y-m') . '.log',  
+            '[' . $dt->format('d/M/Y:H:i:s O') . '] ' . print_r($elements, true) . "\n",
+            FILE_APPEND);
     }
 
-/*    //
-    // Parse the time in UTC and normalize to current minute.
-    //
-    $dt = new DateTime($elements['time'], new DateTimezone('UTC'));
-    $dt->setTime($dt->format('H'), $dt->format('i'), 0);
- */   
     // Setup UTC date
     $utc = new DateTime('now', new DateTimezone('UTC'));
 
@@ -285,55 +290,6 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
             }
         }
     }
-
-
-    //
-    // Add the data points      **** No longer store data in this module ****
-    //
-/*    if( isset($device['fields']) ) {
-        foreach($device['fields'] as $name => $field) {
-            //
-            // Skip missing fields from the json line
-            //
-            if( !isset($elements[$name]) ) {
-                continue;
-            }
-
-            //
-            // Only add to database if flag is set to Store
-            //
-            if( ($field['flags']&0x01) == 0 ) {
-                continue;
-            }
-
-            //
-            // Some devices send 3 copies of the same information, so store the last date
-            // so we know if this is a duplicate sample
-            //
-            if( isset($devices[$model_id]['fields'][$name]['last_sample_date'])
-                && $devices[$model_id]['fields'][$name]['last_sample_date'] == $dt->format('Y-m-d H:i:s')
-                ) {
-                continue;
-            }
-            $devices[$model_id]['fields'][$name]['last_sample_date'] = $dt->format('Y-m-d H:i:s');
-
-            //
-            // Add the data
-            //
-            $strsql = "INSERT INTO qruqsp_43392_device_data (tnid, field_id, sample_date, fvalue) VALUES ("
-                . "'" . ciniki_core_dbQuote($ciniki, $tnid) . "', "
-                . "'" . ciniki_core_dbQuote($ciniki, $field['id']) . "', "
-                . "'" . ciniki_core_dbQuote($ciniki, $dt->format('Y-m-d H:i:s')) . "', "
-                . "'" . ciniki_core_dbQuote($ciniki, $elements[$name]) . "') ";
-            $rc = ciniki_core_dbInsert($ciniki, $strsql, 'qruqsp.43392');
-            if( $rc['stat'] != 'ok' ) {
-                if( $rc['stat'] == 'exists' ) {
-                    continue;
-                }
-                return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.11', 'msg'=>'Unable to add data sample', 'err'=>$rc['err']));
-            }
-        }
-    } */
 
     return array('stat'=>'ok');
 }
