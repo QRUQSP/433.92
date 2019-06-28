@@ -82,7 +82,7 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
     //
     // Acurite 5n1 sends data split into 2 messages. Cache first one until second arrives
     //
-    if( $elements['model'] == 'Acurite 5n1 sensor' 
+    if( $elements['model'] == 'Acurite-5n1' 
         && ($elements['message_type'] == 56 || $elements['message_type'] == 49) 
         ) {
         
@@ -92,14 +92,14 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
         $elements['dt'] = new DateTime($elements['time']);
         $dt = clone $elements['dt'];
         $dt->sub(new DateInterval('PT2M'));
-        if( isset($ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']]) 
-            && $ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']]['dt'] > $dt
-            && $ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']]['message_type'] != $elements['message_type'] 
+        if( isset($ciniki['43392']['last_acurite_5n1_' . $elements['id']]) 
+            && $ciniki['43392']['last_acurite_5n1_' . $elements['id']]['dt'] > $dt
+            && $ciniki['43392']['last_acurite_5n1_' . $elements['id']]['message_type'] != $elements['message_type'] 
             ) {
-            $elements = array_merge($ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']], $elements);
-            unset($ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']]);
+            $elements = array_merge($ciniki['43392']['last_acurite_5n1_' . $elements['id']], $elements);
+            unset($ciniki['43392']['last_acurite_5n1_' . $elements['id']]);
         } else {
-            $ciniki['43392']['last_acurite_5n1_' . $elements['sensor_id']] = $elements;
+            $ciniki['43392']['last_acurite_5n1_' . $elements['id']] = $elements;
             return array('stat'=>'ok');
         }
     }
@@ -114,7 +114,7 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
         ) {
         $dt = new DateTime('now', new DateTimezone('UTC'));
         file_put_contents($ciniki['config']['qruqsp.core']['log_dir'] . '/qruqsp.43392.elements.' . $dt->format('Y-m') . '.log',  
-            '[' . $dt->format('d/M/Y:H:i:s O') . '] ' . print_r($elements, true) . "\n",
+            '[' . $dt->format('d/M/Y:H:i:s O') . '] ' . json_encode($elements) . "\n",
             FILE_APPEND);
     }
 
