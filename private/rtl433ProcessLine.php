@@ -34,8 +34,13 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
         && isset($ciniki['config']['qruqsp.core']['log_dir'])
         && $ciniki['config']['qruqsp.core']['log_dir'] != '' 
         ) {
+        $log_dir = $ciniki['config']['qruqsp.core']['log_dir'] . '/qruqsp.43392';
+        if( !file_exists($log_dir) ) {
+            mkdir($log_dir);
+        }
+
         $dt = new DateTime('now', new DateTimezone('UTC'));
-        file_put_contents($ciniki['config']['qruqsp.core']['log_dir'] . '/qruqsp.43392.json.' . $dt->format('Y-m') . '.log',  
+        file_put_contents($log_dir . '/json.' . $dt->format('Y-m') . '.log',  
             '[' . $dt->format('d/M/Y:H:i:s O') . '] ' . $line . "\n",
             FILE_APPEND);
     }
@@ -112,8 +117,12 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
         && isset($ciniki['config']['qruqsp.core']['log_dir'])
         && $ciniki['config']['qruqsp.core']['log_dir'] != '' 
         ) {
+        $log_dir = $ciniki['config']['qruqsp.core']['log_dir'] . '/qruqsp.43392';
+        if( !file_exists($log_dir) ) {
+            mkdir($log_dir);
+        }
         $dt = new DateTime('now', new DateTimezone('UTC'));
-        file_put_contents($ciniki['config']['qruqsp.core']['log_dir'] . '/qruqsp.43392.elements.' . $dt->format('Y-m') . '.log',  
+        file_put_contents($log_dir . '/elements.' . $dt->format('Y-m') . '.log',  
             '[' . $dt->format('d/M/Y:H:i:s O') . '] ' . json_encode($elements) . "\n",
             FILE_APPEND);
     }
