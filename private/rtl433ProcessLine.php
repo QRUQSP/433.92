@@ -154,6 +154,9 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
             array('container'=>'fields', 'fname'=>'fname', 'fields'=>array('id'=>'field_id', 'ftype', 'fname', 'flags')),
             ));
         if( $rc['stat'] != 'ok' ) {
+            if( $rc['err']['code'] == 'ciniki.core.62' ) {
+                return array('stat'=>'dbgone', 'err'=>array('code'=>'qruqsp.43392.27', 'msg'=>'Database went away.', 'err'=>$rc['err']));
+            }
             return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.7', 'msg'=>'Unable to load device', 'err'=>$rc['err']));
         }
         if( !isset($rc['devices']) || count($rc['devices']) < 1 ) {

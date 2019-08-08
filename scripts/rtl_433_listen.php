@@ -112,6 +112,12 @@ while( $exit == 'no' ) {
     
     if( $byte == "\n" ) {
         $rc = qruqsp_43392_rtl433ProcessLine($ciniki, $tnid, $line, $devices);
+        if( $rc['stat'] == 'dbgone' ) {
+            print_r(json_encode($rc));
+            print "\n";
+            $exit = 'yes';
+            break;
+        }
         if( $rc['stat'] != 'ok' ) {
             print_r(json_encode($rc));
             print "\n";
