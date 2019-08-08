@@ -68,10 +68,9 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
     }
 
     //
-    // Check for sequence number and same line
+    // Check for same line
     //
-    if( isset($elements['sequence_num']) 
-        && isset($ciniki['43392']['last_model']) && $ciniki['43392']['last_model'] == $elements['model']
+    if( isset($ciniki['43392']['last_model']) && $ciniki['43392']['last_model'] == $elements['model']
         && isset($ciniki['43392']['last_id']) && $ciniki['43392']['last_id'] == $elements['id']
         && isset($ciniki['43392']['last_time']) && $ciniki['43392']['last_time'] == $elements['time']
         ) {
@@ -163,7 +162,7 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
                 'did' => $elements['id'],
                 'name' => $elements['model'] . '(' . $elements['id'] . ')',
                 'status' => 10,
-                'lookup_counter' => 0,
+                'lookup_counter' => 25,  // Make the first re-lookup quicker
                 'fields' => array(),
                 );
             //
