@@ -39,7 +39,6 @@ ciniki_core_loadMethod($ciniki, 'ciniki', 'cron', 'private', 'logMsg');
 if( isset($ciniki['config']['qruqsp.43392']['listener']) && $ciniki['config']['qruqsp.43392']['listener'] == 'active' ) {
     error_log('checking');
     exec('ps ax | grep rtl_433_listen.php |grep -v grep', $pids);
-    print_r($pids);
     if( count($pids) == 0 ) {
         //
         // Start the listener
