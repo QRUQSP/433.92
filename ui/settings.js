@@ -72,7 +72,6 @@ function qruqsp_43392_settings() {
             }
             var p = M.qruqsp_43392_settings.menu;
             p.data = rsp;
-            console.log(rsp);
             p.refresh();
             p.show(cb);
         });
@@ -172,12 +171,10 @@ function qruqsp_43392_settings() {
             p.data = rsp.device;
             p.sections.fields.fields = {};
             for(var i in rsp.device.fields) {
-                console.log(M.qruqsp_43392_settings.fieldTypes);
                 p.sections.fields.fields['field_' + rsp.device.fields[i].id] = {'label':rsp.device.fields[i].fname, 
                     'type':'select', 'options':M.qruqsp_43392_settings.fieldTypes};
                 p.data['field_' + rsp.device.fields[i].id] = rsp.device.fields[i].ftype;
             }
-            console.log(rsp.device);
             p.refresh();
             p.show(cb);
         });
