@@ -22,6 +22,7 @@ function qruqsp_43392_deviceGet($ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'),
         'device_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Device'),
+        'replacements'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Replacements'),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
@@ -103,24 +104,6 @@ function qruqsp_43392_deviceGet($ciniki) {
         $device = $rc['devices'][0];
 
         //
-        // Get the latest data sample_date 
-        //
-/*        $strsql = "SELECT MAX(d.sample_date) AS sample_date "
-            . "FROM qruqsp_43392_device_fields AS f "
-            . "LEFT JOIN qruqsp_43392_device_data AS d ON ("
-                . "f.id = d.field_id "
-                . "AND d.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-                . ") "
-            . "WHERE f.device_id = '" . ciniki_core_dbQuote($ciniki, $args['device_id']) . "' "
-            . "AND f.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-            . "LIMIT 1 ";
-        $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'qruqsp.43392', 'item');
-        if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.23', 'msg'=>'Unable to load device', 'err'=>$rc['err']));
-        }
-        $sample_date = isset($rc['item']['sample_date']) ? $rc['item']['sample_date'] : '';
-*/
-        //
         // Get the list of fields
         //
         $strsql = "SELECT f.id, "
@@ -132,14 +115,7 @@ function qruqsp_43392_deviceGet($ciniki) {
 //            . "IF( (flags&0x02) = 0x02, 'Yes', 'No') AS publish, "
             . "f.ftype, "
             . "f.ftype AS ftype_text "
-//            . "f.last_value AS fvalue, "
-//            . "f.last_date AS sample_date "
             . "FROM qruqsp_43392_device_fields AS f "
-//            . "LEFT JOIN qruqsp_43392_device_data AS d ON ("
-//                . "f.id = d.field_id "
-//                . "AND d.sample_date = '" . ciniki_core_dbQuote($ciniki, $sample_date) . "' "
-//                . "AND d.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-//                . ") "
             . "WHERE f.device_id = '" . ciniki_core_dbQuote($ciniki, $args['device_id']) . "' "
             . "AND f.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "";
@@ -155,9 +131,30 @@ function qruqsp_43392_deviceGet($ciniki) {
             return $rc;
         }
         $device['fields'] = isset($rc['fields']) ? $rc['fields'] : array();
-
     }
 
-    return array('stat'=>'ok', 'device'=>$device);
+    $rsp = array('stat'=>'ok', 'device'=>$device);
+    //
+    // Check if replacement list should be returned
+    //
+    if( isset($args['replacements']) && $args['replacements'] == 'yes' ) {
+        $strsql = "SELECT qruqsp_43392_devices.id, "
+            . "qruqsp_43392_devices.name "
+            . "FROM qruqsp_43392_devices "
+            . "WHERE qruqsp_43392_devices.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+            . "AND status = 30 "
+            . "ORDER BY status "
+            . "";
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+        $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
+            array('container'=>'devices', 'fname'=>'id', 'fields'=>array('id', 'name')),
+            ));
+        if( $rc['stat'] != 'ok' ) {
+            return $rc;
+        }
+        $rsp['active'] = isset($rc['devices']) ? $rc['devices'] : array();
+    }
+
+    return $rsp;
 }
 ?>

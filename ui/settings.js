@@ -61,7 +61,6 @@ function qruqsp_43392_settings() {
     this.menu.rowFn = function(s, i, d) {
         if( s == 'active' || s == 'new' ) {
             return 'M.qruqsp_43392_settings.edit.open(\'M.qruqsp_43392_settings.menu.open();\',\'' + d.id + '\',M.qruqsp_43392_settings.menu.nplist);';
-            //return 'M.qruqsp_43392_settings.device.open(\'M.qruqsp_43392_settings.menu.open();\',\'' + d.id + '\',M.qruqsp_43392_settings.device.nplist);';
         }
     }
     this.menu.open = function(cb) {
@@ -137,6 +136,7 @@ function qruqsp_43392_settings() {
             },
         '_buttons':{'label':'', 'buttons':{
             'save':{'label':'Save', 'fn':'M.qruqsp_43392_settings.edit.save();'},
+            'replace':{'label':'Replace Another Device', 'fn':'M.qruqsp_43392_settings.edit.save("M.qruqsp_43392_settings.replace.open(\'M.qruqsp_43392_settings.edit.open();\',M.qruqsp_43392_settings.edit.device_id);");'},
             'delete':{'label':'Delete', 
                 'visible':function() {return M.qruqsp_43392_settings.edit.device_id > 0 ? 'yes' : 'no'; },
                 'fn':'M.qruqsp_43392_settings.edit.remove();'},
@@ -156,7 +156,7 @@ function qruqsp_43392_settings() {
     }
     this.edit.rowFn = function(s, i, d) {
         if( s == 'fields' ) {
-            return 'M.qruqsp_43392_settings.devicefield.open(\'M.qruqsp_43392_settings.edit.open();\',\'' + d.id + '\',M.qruqsp_43392_settings.edit.nplist);';
+            return 'M.qruqsp_43392_settings.edit.save("M.qruqsp_43392_settings.devicefield.open(\'M.qruqsp_43392_settings.edit.open();\',\'' + d.id + '\',M.qruqsp_43392_settings.edit.nplist);");';
         }
     }
     this.edit.open = function(cb, did, list) {
@@ -331,6 +331,54 @@ function qruqsp_43392_settings() {
     this.devicefield.addClose('Cancel');
     this.devicefield.addButton('next', 'Next');
     this.devicefield.addLeftButton('prev', 'Prev');
+
+    //
+    // The panel to replace an active device with a new device. This is used
+    // when the ID on a sensor changes after battery replacement.
+    //
+    this.replace = new M.panel('Replace Device', 'qruqsp_43392_settings', 'edit', 'mc', 'medium', 'sectioned', 'qruqsp.43392.settings.replace');
+    this.replace.data = null;
+    this.replace.device_id = 0;
+    this.replace.nplist = [];
+    this.replace.sections = {
+        'general':{'label':'', 'fields':{
+            'model':{'label':'Model', 'editable':'no', 'type':'text'},
+            'did':{'label':'id', 'editable':'no', 'type':'text'},
+            }},
+        '_sensors':{'label':'Replace Active Sensor', 'fields':{
+            'old_device_id':{'label':'', 'hidelabel':'yes', 'type':'select', 'options':{}, 'complex_options':{'value':'id', 'name':'name'}},
+            }},
+        '_buttons':{'label':'', 'buttons':{
+            'replace':{'label':'Replace Sensor', 'fn':'M.qruqsp_43392_settings.replace.save();'},
+            }},
+        };
+    this.replace.fieldValue = function(s, i, d) { return this.data[i]; }
+    this.replace.open = function(cb, did, list) {
+        if( did != null ) { this.device_id = did; }
+        M.api.getJSONCb('qruqsp.43392.deviceGet', {'tnid':M.curTenantID, 'device_id':this.device_id, 'replacements':'yes'}, function(rsp) {
+            if( rsp.stat != 'ok' ) {
+                M.api.err(rsp);
+                return false;
+            }
+            var p = M.qruqsp_43392_settings.replace;
+            p.data = rsp.device;
+            p.sections._sensors.fields.old_device_id.options = rsp.active;
+            p.refresh();
+            p.show(cb);
+        });
+    }
+    this.replace.save = function(cb) {
+        if( cb == null ) { cb = 'M.qruqsp_43392_settings.replace.close();'; }
+        var old_device_id = this.formValue('old_device_id');
+        M.api.getJSONCb('qruqsp.43392.deviceReplace', {'tnid':M.curTenantID, 'old_device_id':old_device_id, 'new_device_id':this.device_id}, function(rsp) {
+            if( rsp.stat != 'ok' ) {
+                M.api.err(rsp);
+                return false;
+            }
+            M.qruqsp_43392_settings.menu.open();
+        });
+    }
+    this.replace.addClose('Cancel');
 
     //
     // Start the app
