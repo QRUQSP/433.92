@@ -44,7 +44,12 @@ function qruqsp_43392_hooks_uiSettings(&$ciniki, $tnid, $args) {
             )
         ) {
         //$rsp['settings_menu_items'][] = array('priority'=>5000, 'label'=>'433.92 Settings', 'edit'=>array('app'=>'qruqsp.43392.settings'));
-        $rsp['menu_items'][] = array('priority'=>1000, 'label'=>'433.92', 'edit'=>array('app'=>'qruqsp.43392.settings'));
+        $rsp['menu_items'][] = array(
+            'priority'=>1000, 
+            'label'=>'433.92', 
+            'helpcontent' => 'Manage weather and other sensors that beacon on 433.92Mhz',
+            'edit'=>array('app'=>'qruqsp.43392.settings'),
+            );
     }
 
     return $rsp;

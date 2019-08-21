@@ -100,6 +100,14 @@ function qruqsp_43392_deviceList($ciniki) {
                 return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.25', 'msg'=>'Unable to remove device', 'err'=>$rc['err']));
             }
         }
+
+        //
+        // Restart rtl_433
+        //
+        $rc = qruqsp_43392_rtl433Restart($ciniki, $args['tnid']);
+        if( $rc['stat'] != 'ok' ) {
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.28', 'msg'=>'', 'err'=>$rc['err']));
+        }
     }
 
     //
