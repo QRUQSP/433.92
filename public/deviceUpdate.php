@@ -68,11 +68,14 @@ function qruqsp_43392_deviceUpdate(&$ciniki) {
     }
 
     //
-    // Restart rtl_433
+    // Restart rtl_433 if changes
     //
-    $rc = qruqsp_43392_rtl433Restart($ciniki, $args['tnid']);
-    if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.28', 'msg'=>'', 'err'=>$rc['err']));
+    if( count($args) > 2 ) {
+        ciniki_core_loadMethod($ciniki, 'qruqsp', '43392', 'private', 'rtl433Restart');
+        $rc = qruqsp_43392_rtl433Restart($ciniki, $args['tnid']);
+        if( $rc['stat'] != 'ok' ) {
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.28', 'msg'=>'', 'err'=>$rc['err']));
+        }
     }
 
     //

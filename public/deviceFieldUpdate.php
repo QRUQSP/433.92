@@ -68,6 +68,17 @@ function qruqsp_43392_deviceFieldUpdate(&$ciniki) {
         return $rc;
     }
 
+    if( count($args) > 2 ) {
+        //
+        // Restart rtl_433
+        //
+        ciniki_core_loadMethod($ciniki, 'qruqsp', '43392', 'private', 'rtl433Restart');
+        $rc = qruqsp_43392_rtl433Restart($ciniki, $args['tnid']);
+        if( $rc['stat'] != 'ok' ) {
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.28', 'msg'=>'', 'err'=>$rc['err']));
+        }
+    }
+
     //
     // Update the last_change date in the tenant modules
     // Ignore the result, as we don't want to stop user updates if this fails.
