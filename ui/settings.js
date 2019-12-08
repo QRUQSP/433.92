@@ -87,6 +87,7 @@ function qruqsp_43392_settings() {
             p.show(cb);
         });
     }
+    this.menu.addButton('refresh', 'Refresh', 'M.qruqsp_43392_settings.menu.open();');
     this.menu.addClose('Back');
 
     //
