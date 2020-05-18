@@ -69,7 +69,7 @@ function qruqsp_43392_main() {
         //
         var ac = M.createContainer(ap, 'qruqsp_43392_main', 'yes');
         if( ac == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         }
         
