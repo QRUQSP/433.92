@@ -26,6 +26,7 @@ function qruqsp_43392_objects(&$ciniki) {
             'did' => array('name'=>'ID'),
             'name' => array('name'=>'Name'),
             'status' => array('name'=>'Status', 'default'=>'10'),
+            'flags' => array('name'=>'Options', 'default'=>'0'),
             ),
         'history_table' => 'qruqsp_43392_history',
         );

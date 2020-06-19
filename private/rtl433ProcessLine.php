@@ -137,7 +137,7 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
         //
         // Check the database
         //
-        $strsql = "SELECT d.id, d.model, d.did, d.name, d.status, "
+        $strsql = "SELECT d.id, d.model, d.did, d.name, d.status, d.flags AS device_flags, "
             . "f.id AS field_id, f.fname, f.ftype, f.flags "
             . "FROM qruqsp_43392_devices AS d "
             . "LEFT JOIN qruqsp_43392_device_fields AS f ON ("
@@ -150,7 +150,7 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
             . "";
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
         $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'qruqsp.43392', array(
-            array('container'=>'devices', 'fname'=>'id', 'fields'=>array('id', 'model', 'did', 'name', 'status')),
+            array('container'=>'devices', 'fname'=>'id', 'fields'=>array('id', 'model', 'did', 'name', 'status', 'flags'=>'device_flags')),
             array('container'=>'fields', 'fname'=>'fname', 'fields'=>array('id'=>'field_id', 'ftype', 'fname', 'flags')),
             ));
         if( $rc['stat'] != 'ok' ) {
@@ -163,11 +163,15 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
             $device = array(
                 'model' => $elements['model'],
                 'did' => $elements['id'],
+                'flags' => 0,
                 'name' => $elements['model'] . '(' . $elements['id'] . ')',
                 'status' => 10,
                 'lookup_counter' => 25,  // Make the first re-lookup quicker
                 'fields' => array(),
                 );
+            if( isset($elements['battery_ok']) ) {
+                $device['flags'] = ($elements['battery_ok'] == 0 ? 0x01 : 0);
+            }
             //
             // Add the device
             //
@@ -184,6 +188,32 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
     } else {
         $device = $devices[$model_id];
         $devices[$model_id]['lookup_counter']++;
+    }
+
+    //
+    // Check battery status
+    //
+    $device_updates = array();
+    if( ($device['flags']&0x01) == 0 && isset($elements['battery_ok']) && $elements['battery_ok'] == 0 ) {
+        $device['flags'] |= 0x01;
+        $device_updates['flags'] = $device['flags'];
+    } elseif( ($device['flags']&0x01) == 1 && isset($elements['battery_ok']) && $elements['battery_ok'] == 1 ) {
+        $device['flags'] &= ~0x01;
+        $device_updates['flags'] = $device['flags'];
+    } 
+
+    //
+    // Check if device has been updated
+    //
+    if( count($device_updates) > 0 ) {
+        error_log('update device: ' . $device['id'] . '-' . print_r($device_updates, true));
+        $rc = ciniki_core_objectUpdate($ciniki, $tnid, 'qruqsp.43392.device', $device['id'], $device_updates, 0x07);
+        if( $rc['stat'] != 'ok' ) {
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.23', 'msg'=>'Unable to update device', 'err'=>$rc['err']));
+        }
+        foreach($device_updates as $k => $v) {
+            $devices[$model_id][$k] = $v;
+        }
     }
 
     //
@@ -296,7 +326,7 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
                 $fn = $rc['function_call'];
                 $rc = $fn($ciniki, $tnid, $data);
                 if( $rc['stat'] != 'ok' ) {
-                    return $rc;
+                    error_log('WARN: Error sending data to other modules: ' . print_r($rc, true));
                 }
             }
         }

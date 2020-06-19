@@ -120,7 +120,9 @@ function qruqsp_43392_deviceList($ciniki) {
             . "qruqsp_43392_devices.did, "
             . "qruqsp_43392_devices.name, "
             . "qruqsp_43392_devices.status, "
-            . "qruqsp_43392_devices.status AS status_text "
+            . "qruqsp_43392_devices.status AS status_text, "
+            . "qruqsp_43392_devices.flags, "
+            . "if((qruqsp_43392_devices.flags&0x01)=0x01, 'Low', 'Normal') AS battery_text "
             . "FROM qruqsp_43392_devices "
             . "WHERE qruqsp_43392_devices.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND status = 30 "
@@ -129,7 +131,7 @@ function qruqsp_43392_deviceList($ciniki) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
             array('container'=>'devices', 'fname'=>'id', 
-                'fields'=>array('id', 'model', 'did', 'name', 'status', 'status_text'),
+                'fields'=>array('id', 'model', 'did', 'name', 'status', 'status_text', 'flags', 'battery_text'),
                 'maps'=>array('status_text'=>$maps['device']['status']),
                 ),
             ));
@@ -145,7 +147,9 @@ function qruqsp_43392_deviceList($ciniki) {
             . "qruqsp_43392_devices.did, "
             . "qruqsp_43392_devices.name, "
             . "qruqsp_43392_devices.status, "
-            . "qruqsp_43392_devices.status AS status_text "
+            . "qruqsp_43392_devices.status AS status_text, "
+            . "qruqsp_43392_devices.flags, "
+            . "if((qruqsp_43392_devices.flags&0x01)=0x01, 'Low', 'Normal') AS battery_text "
             . "FROM qruqsp_43392_devices "
             . "WHERE qruqsp_43392_devices.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND status = 10 "
@@ -154,7 +158,7 @@ function qruqsp_43392_deviceList($ciniki) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
             array('container'=>'devices', 'fname'=>'id', 
-                'fields'=>array('id', 'model', 'did', 'name', 'status', 'status_text'),
+                'fields'=>array('id', 'model', 'did', 'name', 'status', 'status_text', 'flags', 'battery_text'),
                 'maps'=>array('status_text'=>$maps['device']['status']),
                 ),
             ));
@@ -173,7 +177,9 @@ function qruqsp_43392_deviceList($ciniki) {
             . "qruqsp_43392_devices.did, "
             . "qruqsp_43392_devices.name, "
             . "qruqsp_43392_devices.status, "
-            . "qruqsp_43392_devices.status AS status_text "
+            . "qruqsp_43392_devices.status AS status_text, "
+            . "qruqsp_43392_devices.flags, "
+            . "if((qruqsp_43392_devices.flags&0x01)=0x01, 'Low', 'Normal') AS battery_text "
             . "FROM qruqsp_43392_devices "
             . "WHERE qruqsp_43392_devices.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "ORDER BY status "
@@ -181,7 +187,7 @@ function qruqsp_43392_deviceList($ciniki) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
             array('container'=>'devices', 'fname'=>'id', 
-                'fields'=>array('id', 'model', 'did', 'name', 'status', 'status_text'),
+                'fields'=>array('id', 'model', 'did', 'name', 'status', 'status_text', 'flags', 'battery_text'),
                 'maps'=>array('status_text'=>$maps['device']['status']),
                 ),
             ));

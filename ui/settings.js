@@ -28,11 +28,13 @@ function qruqsp_43392_settings() {
             'hint':'Search device',
             'noData':'No device found',
             },
-        'active':{'label':'Devices', 'type':'simplegrid', 'num_cols':2,
+        'active':{'label':'Devices', 'type':'simplegrid', 'num_cols':3,
+            'headerValues':['Name', 'Status', 'Battery'],
             'noData':'No devices setup',
             },
-        'new':{'label':'New Devices', 'type':'simplegrid', 'num_cols':2,
+        'new':{'label':'New Devices', 'type':'simplegrid', 'num_cols':3,
             'noData':'No new devices',
+            'headerValues':['Name', 'Status', 'Battery'],
             'addTxt':'Clear List',
             'addFn':'M.qruqsp_43392_settings.menu.clearList();',
             },
@@ -55,7 +57,13 @@ function qruqsp_43392_settings() {
             switch(j) {
                 case 0: return d.name;
                 case 1: return d.status_text;
+                case 2: return d.battery_text;
             }
+        }
+    }
+    this.menu.cellClass = function(s, i, j, d) {
+        if( j == 2 && (d.flags&0x01) == 0x01 ) {
+            return 'statusred';
         }
     }
     this.menu.rowFn = function(s, i, d) {
