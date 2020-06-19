@@ -24,7 +24,7 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
     // The following fields will be ignored when setting up the fields for a 
     // device in qruqsp_43392_device_fields. These fields are already stored as part of the device.
     //
-    $skip_fields = array('time', 'model', 'id', 'sensor_id');
+    $skip_fields = array('time', 'model', 'id', 'sensor_id', 'battery_ok');
 
     //
     // Check if json should be logged
@@ -206,7 +206,6 @@ function qruqsp_43392_rtl433ProcessLine(&$ciniki, $tnid, $line, &$devices = arra
     // Check if device has been updated
     //
     if( count($device_updates) > 0 ) {
-        error_log('update device: ' . $device['id'] . '-' . print_r($device_updates, true));
         $rc = ciniki_core_objectUpdate($ciniki, $tnid, 'qruqsp.43392.device', $device['id'], $device_updates, 0x07);
         if( $rc['stat'] != 'ok' ) {
             return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.43392.23', 'msg'=>'Unable to update device', 'err'=>$rc['err']));

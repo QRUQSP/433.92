@@ -73,6 +73,7 @@ function qruqsp_43392_deviceGet($ciniki) {
             'did'=>'',
             'name'=>'',
             'status'=>'10',
+            'battery'=>'',
         );
     }
 
@@ -84,7 +85,9 @@ function qruqsp_43392_deviceGet($ciniki) {
             . "qruqsp_43392_devices.model, "
             . "qruqsp_43392_devices.did, "
             . "qruqsp_43392_devices.name, "
-            . "qruqsp_43392_devices.status "
+            . "qruqsp_43392_devices.status, "
+            . "qruqsp_43392_devices.flags, "
+            . "IF((qruqsp_43392_devices.flags&0x01)=0x01,'Low', 'Normal') AS battery "
             . "FROM qruqsp_43392_devices "
             . "WHERE qruqsp_43392_devices.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND qruqsp_43392_devices.id = '" . ciniki_core_dbQuote($ciniki, $args['device_id']) . "' "
@@ -92,7 +95,7 @@ function qruqsp_43392_deviceGet($ciniki) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.43392', array(
             array('container'=>'devices', 'fname'=>'id', 
-                'fields'=>array('model', 'did', 'name', 'status'),
+                'fields'=>array('model', 'did', 'name', 'status', 'flags', 'battery'),
                 ),
             ));
         if( $rc['stat'] != 'ok' ) {

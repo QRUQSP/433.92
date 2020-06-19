@@ -136,6 +136,7 @@ function qruqsp_43392_settings() {
             'did':{'label':'id', 'editable':'no', 'type':'text'},
             'name':{'label':'Name', 'type':'text'},
             'status':{'label':'Status', 'type':'toggle', 'toggles':{'10':'New', '30':'Active', '60':'Ignore'}},
+            'battery':{'label':'Battery', 'type':'text', 'editable':'no'},
             }},
 //        'fields':{'label':'', 'fields':{
 //            }},
