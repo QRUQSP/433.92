@@ -217,15 +217,15 @@ function qruqsp_43392_settings() {
         }
     }
     this.edit.remove = function() {
-        if( confirm('Are you sure you want to remove device?') ) {
-            M.api.getJSONCb('qruqsp.43392.deviceDelete', {'tnid':M.curTenantID, 'device_id':this.device_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove device?',null,function() {
+            M.api.getJSONCb('qruqsp.43392.deviceDelete', {'tnid':M.curTenantID, 'device_id':M.qruqsp_43392_settings.edit.device_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.qruqsp_43392_settings.edit.close();
             });
-        }
+        });
     }
     this.edit.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.device_id) < (this.nplist.length - 1) ) {
@@ -314,15 +314,15 @@ function qruqsp_43392_settings() {
         }
     }
     this.devicefield.remove = function() {
-        if( confirm('Are you sure you want to remove field?') ) {
-            M.api.getJSONCb('qruqsp.43392.deviceFieldDelete', {'tnid':M.curTenantID, 'field_id':this.field_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove field?',null,function() {
+            M.api.getJSONCb('qruqsp.43392.deviceFieldDelete', {'tnid':M.curTenantID, 'field_id':M.qruqsp_43392_settings.devicefield.field_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.qruqsp_43392_settings.devicefield.close();
             });
-        }
+        });
     }
     this.devicefield.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.field_id) < (this.nplist.length - 1) ) {
@@ -406,7 +406,7 @@ function qruqsp_43392_settings() {
         //
         var ac = M.createContainer(ap, 'qruqsp_43392_settings', 'yes');
         if( ac == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         }
         
